@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>西南大学绩点/平均分一键计算</title>
+    <link rel="stylesheet" href="public/css/amazeui.min.css">
+    <link rel="stylesheet" type="text/css" href="public/css/sweetalert2.min.css">
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?0d15540a1baf245629e09cdeb311bcd0";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+    <style>
+        #loading{
+            text-align: center;
+        }
+        #loading i{
+            font-size:50px;
+        }
+        .am-panel-bd p{
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        .am-modal-bd div{
+            text-align: left;
+        }
+        .am-modal-bd p{
+            margin-top: 0px;
+            margin-bottom: 5px;
+        }
+        table tbody tr,#bottom-nav{
+            cursor: hand;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="am-topbar am-topbar-inverse">
+        <div class="am-g am-g-fixed">
+            <h1 class="am-topbar-brand">
+                <a href="#">西南大学绩点/平均分一键计算</a>
+            </h1>
+
+            <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-success am-show-sm-only" data-am-collapse="{target: '#doc-topbar-collapse'}"><span class="am-sr-only">导航切换</span> <span class="am-icon-bars"></span></button>
+
+            <div class="am-collapse am-topbar-collapse" id="doc-topbar-collapse">
+                <div class="am-topbar-right">
+                    <a target="_blank" class="am-btn am-btn-primary am-topbar-btn am-btn-sm" href="http://lxl520.com">@莫回首</a>
+                </div>
+            </div>
+        </div>
+
+    </header>
+    <div class="am-g am-g-fixed">
+        <div id="grade" class="am-u-g-11">
+
+        </div>
+        <div id="loading">
+            <div>
+                <i class="am-icon-spinner am-icon-pulse"></i>
+                <p>加载中...</p>
+            </div>
+        </div>
+    </div>
+
+
+    <div data-am-widget="navbar" class="am-navbar am-cf am-navbar-default "
+         id="bottom-nav">
+        <ul class="am-navbar-nav am-cf am-avg-sm-4">
+            <li  onclick="calculation()">
+                <a href="#">
+                    <span class="am-icon-calculator"></span>
+                    <span class="am-navbar-label">计算</span>
+                </a>
+            </li>
+            <li onclick="chooseAll()">
+                <a href="#" class="">
+                    <span class="am-icon-hand-pointer-o"></span>
+                    <span class="am-navbar-label">全选</span>
+                </a>
+            </li>
+            <li onclick="chooseReq()">
+                <a href="#" class="">
+                    <span class="am-icon-gg"></span>
+                    <span class="am-navbar-label">必修</span>
+                </a>
+            </li>
+            <li data-am-modal="{target: '#help'}">
+                <a href="#" class="">
+                    <span class="am-icon-bell"></span>
+                    <span class="am-navbar-label">帮助</span>
+                </a>
+            </li>
+            <li >
+                <a href="http://lxl520.com" target="_blank" class="">
+                    <span class="am-icon-user"></span>
+                    <span class="am-navbar-label">联系作者</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+
+    <!--计算成绩modal-->
+    <div class="am-modal" tabindex="-1" id="cal">
+        <div class="am-modal-dialog">
+            <div class="am-modal-hd">计算结果
+                <a href="javascript: void(0)" class="am-close am-close-spin" data-am-modal-close>&times;</a>
+            </div>
+            <div class="am-modal-bd">
+                <div class="cal-result am-alert am-alert-secondary">
+                    <p>计算结果</p>
+                    <p>您一共选择了<span class="cal-choose"></span>门课程</p>
+                    <p>平均绩点：<span class="cal-gpa"></span></p>
+                    <p>平均成绩：<span class="cal-grade"></span></p>
+                </div>
+                <div class="cal-attention am-alert am-alert-warning">
+                    <p>计算方式</p>
+                    <p>学分绩点=∑(课程绩点*课程学分) / 课程总学分</p>
+                    <p>平均成绩=∑(课程成绩*课程学分) / 课程总学分</p>
+                </div>
+            </div>
+            <div class="am-modal-footer">
+                <button class="am-btn am-btn-primary am-btn-block" data-am-modal-close>关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <!--计算成绩modal-->
+    <div class="am-modal" tabindex="-1" id="help">
+        <div class="am-modal-dialog">
+            <div class="am-modal-hd">帮助
+                <a href="javascript: void(0)" class="am-close am-close-spin" data-am-modal-close>&times;</a>
+            </div>
+            <div class="am-modal-bd">
+                <div class="cal-result am-alert am-alert-secondary">
+                    <p>提示:</p>
+                    <p>点击你想计算的课程，再点击下方的计算课程即可计算</p>
+                </div>
+            </div>
+            <div class="am-modal-footer">
+                <button class="am-btn am-btn-primary am-btn-block" data-am-modal-close>关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="public/js/jquery-2.1.1.min.js"></script>
+    <script src="public/js/amazeui.min.js"></script>
+    <script src="public/js/sweetalert2.min.js"></script>
+    <script src="public/js/grade.js"></script>
+
+</body>
+</html>
