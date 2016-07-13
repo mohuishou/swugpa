@@ -69,7 +69,7 @@ class Swugpa{
 
     public function grade($year,$term){
 
-        if($this->loginJwc($this->_college_cookie)){
+        if($this->loginJwc()){
             $this->getGrade($this->_jwc_cookie,$this->_uid,$year,$term);
         };
     }

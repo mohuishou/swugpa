@@ -100,10 +100,10 @@
                     <span class="am-navbar-label">帮助</span>
                 </a>
             </li>
-            <li >
-                <a href="http://lxl520.com" target="_blank" class="">
-                    <span class="am-icon-user"></span>
-                    <span class="am-navbar-label">联系作者</span>
+            <li data-am-modal="{target: '#share'}">
+                <a >
+                    <span class="am-icon-share"></span>
+                    <span class="am-navbar-label">分享</span>
                 </a>
             </li>
         </ul>
@@ -135,7 +135,7 @@
         </div>
     </div>
 
-    <!--计算成绩modal-->
+    <!--帮助modal-->
     <div class="am-modal" tabindex="-1" id="help">
         <div class="am-modal-dialog">
             <div class="am-modal-hd">帮助
@@ -145,6 +145,26 @@
                 <div class="cal-result am-alert am-alert-secondary">
                     <p>提示:</p>
                     <p>点击你想计算的课程，再点击下方的计算课程即可计算</p>
+                    <p>如果你在使用当中有什么问题，可以给我发送邮件：</p>
+                    <p>1@lailin.xyz</p>
+                </div>
+            </div>
+            <div class="am-modal-footer">
+                <button class="am-btn am-btn-primary am-btn-block" data-am-modal-close>关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <!--分享modal-->
+    <div class="am-modal" tabindex="-1" id="share">
+        <div class="am-modal-dialog">
+            <div class="am-modal-hd">分享
+                <a href="javascript: void(0)" class="am-close am-close-spin" data-am-modal-close>&times;</a>
+            </div>
+            <div class="am-modal-bd">
+                <div class="cal-result am-alert am-alert-secondary">
+                    <p>如果你觉得还不错，赶快分享给你的小伙伴吧</p>
+                    <div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a><a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a><a href="#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博"></a><a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网"></a><a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a></div>
                 </div>
             </div>
             <div class="am-modal-footer">
@@ -157,6 +177,8 @@
     <script src="public/js/amazeui.min.js"></script>
     <script src="public/js/sweetalert2.min.js"></script>
     <script src="public/js/grade.js"></script>
+
+    <script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
 
 </body>
 </html>
