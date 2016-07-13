@@ -159,12 +159,12 @@ function getGrade(y,t) {
                            $('#loading').hide();
                        }
 
-            }else if(status==20001){
+            }else if(data.status==20001){
                 swal('提示',"尚未登录<br />", 'warning');
                 setTimeout(function () {
                     location.href="./index.html";
                 },1000);
-            }else if(status==20002){
+            }else if(data.status==20002){
                 swal('提示','参数错误', 'warning');
                 $('#loading').hide();
             }else {
