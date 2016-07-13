@@ -46,9 +46,9 @@ function calculation() {
     var sum_grade=0;
     var sum_count=0;
     $('.choose').each(function () {
-        var s_gpa=Number($(this).find('.gpa').text());
-        var s_grade=Number($(this).find('.grade').text());
-        var s_xf=Number($(this).find('.credit').text());
+        var s_gpa=Number($(this).find('.gpa').attr('val'));
+        var s_grade=Number($(this).find('.grade').attr('val'));
+        var s_xf=Number($(this).find('.credit').attr('val'));
         sum_gpa+=s_gpa*s_xf;
         sum_grade+=s_grade*s_xf;
         sum_xf+=s_xf;
@@ -56,6 +56,10 @@ function calculation() {
     });
     var avg_gpa=sum_gpa/sum_xf;
     var avg_grade=sum_grade/sum_xf;
+
+    //保留小数点后两位
+    avg_gpa=avg_gpa.toFixed(2);
+    avg_grade=avg_grade.toFixed(2);
 
     $('.cal-choose').text(sum_count);
     $('.cal-gpa').text(avg_gpa);
@@ -98,9 +102,9 @@ function getGrade(y,t) {
                 for (var i=0;i<data.grade.length;i++){
                     str_grade+= '                   <tr class="type-'+data.grade[i].type+'">'+
                         '                        <td class="class_name">'+data.grade[i].class_name+'</td>'+
-                        '                        <td class="grade">'+data.grade[i].grade+'</td>'+
-                        '                        <td class="gpa">'+data.grade[i].gpa+'</td>'+
-                        '                        <td class="credit">'+data.grade[i].credit+'</td>'+
+                        '                        <td class="grade" val="'+data.grade[i].grade_val+'">'+data.grade[i].grade+'</td>'+
+                        '                        <td class="gpa" val="'+data.grade[i].gpa+'" >'+data.grade[i].gpa+'</td>'+
+                        '                        <td class="credit" val="'+data.grade[i].credit+'"   >'+data.grade[i].credit+'</td>'+
                         '                        <td>'+data.grade[i].type_name+'</td>'+
                         '                    </tr>';
                 }

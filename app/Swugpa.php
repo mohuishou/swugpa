@@ -193,11 +193,16 @@ class Swugpa{
             foreach ($re as $k => $v){
                 $grade_data[$k]['class_name']=$v->kcmc;
                 $grade_data[$k]['grade']=$v->cj;
+                $grade_val=$this->gradeSwap($v->cj);
+
+                //所有成绩换算为分数
+                $grade_data[$k]['grade_val']=$grade_val;
+
                 $grade_data[$k]['gpa']=$v->jd;
                 $grade_data[$k]['credit']=$v->xf;
                 $sum_xf+=$v->xf;
                 //总分和总的绩点
-                $sum_grade+=$v->cj*$v->xf;
+                $sum_grade+=$grade_val*$v->xf;
                 $sum_gpa+=$v->jd*$v->xf;
 
                 if(isset($v->kcxzmc)){
@@ -205,7 +210,7 @@ class Swugpa{
                         $grade_data[$k]['type']=1;//该门课程为必修
                         $grade_data[$k]['type_name']='必修';
                         //必修学分和绩点
-                        $sum_require_grade+=$v->cj*$v->xf;
+                        $sum_require_grade+=$grade_val*$v->xf;
                         $sum_require_gpa+=$v->jd*$v->xf;
                         $sum_require_xf+=$v->xf;
                     }else{
@@ -215,7 +220,7 @@ class Swugpa{
 //                    $grade_data[$k]['type_name']=$v->kcxzmc;
                 }else{
                     //必修学分和绩点
-                    $sum_require_grade+=$v->cj*$v->xf;
+                    $sum_require_grade+=$grade_val*$v->xf;
                     $sum_require_gpa+=$v->jd*$v->xf;
                     $sum_require_xf+=$v->xf;
                     $grade_data[$k]['type']=1;//该门课程为必修
@@ -236,6 +241,40 @@ class Swugpa{
     public function returnData($msg,$status=200,$data=null){
         echo json_encode( ['status'=>$status, 'msg'=>$msg, 'data'=>$data]);
         return false;
+    }
+
+    /**
+     * 成绩等级分数换算表
+     * @author mohuishou<1@lailin.xyz>
+     * @param $g
+     * @return int
+     */
+    public function gradeSwap($g){
+        $g_swap=0;
+        if(is_numeric($g)){
+            return $g;
+        }
+        switch ($g){
+            case 'A':
+                $g_swap=95;
+                break;
+            case 'B':
+                $g_swap=85;
+                break;
+            case 'C':
+                $g_swap=75;
+                break;
+            case 'D':
+                $g_swap=65;
+                break;
+            case 'E':
+                $g_swap=55;
+                break;
+            default:
+                $g_swap=75;
+                break;
+        }
+        return $g_swap;
     }
 
 
