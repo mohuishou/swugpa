@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="西南大学绩点/平均分一键计算 by 莫回首">
+    <meta name="keywords" content="西南大学平均分一键计算，西南大学绩点一键计算，西南大学，绩点，平均分，一键计算，绩点一键计算，平均分一键计算，莫回首，若相惜">
     <title>西南大学绩点/平均分一键计算</title>
     <link rel="stylesheet" href="public/css/amazeui.min.css">
     <link rel="stylesheet" type="text/css" href="public/css/sweetalert2.min.css">
@@ -35,7 +37,7 @@
             margin-top: 0px;
             margin-bottom: 5px;
         }
-        table tbody tr,#bottom-nav{
+        table tbody tr,#bottom-nav li a{
             cursor: hand;
         }
     </style>
@@ -48,7 +50,7 @@
                 <a href="#">西南大学绩点/平均分一键计算</a>
             </h1>
 
-            <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-success am-show-sm-only" data-am-collapse="{target: '#doc-topbar-collapse'}"><span class="am-sr-only">导航切换</span> <span class="am-icon-bars"></span></button>
+            <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-primary am-show-sm-only" data-am-collapse="{target: '#doc-topbar-collapse'}"><span class="am-sr-only">导航切换</span> <span class="am-icon-bars"></span></button>
 
             <div class="am-collapse am-topbar-collapse" id="doc-topbar-collapse">
                 <div class="am-topbar-right">
@@ -75,25 +77,25 @@
          id="bottom-nav">
         <ul class="am-navbar-nav am-cf am-avg-sm-4">
             <li  onclick="calculation()">
-                <a href="#">
+                <a >
                     <span class="am-icon-calculator"></span>
                     <span class="am-navbar-label">计算</span>
                 </a>
             </li>
             <li onclick="chooseAll()">
-                <a href="#" class="">
+                <a class="">
                     <span class="am-icon-hand-pointer-o"></span>
                     <span class="am-navbar-label">全选</span>
                 </a>
             </li>
             <li onclick="chooseReq()">
-                <a href="#" class="">
+                <a  class="">
                     <span class="am-icon-gg"></span>
                     <span class="am-navbar-label">必修</span>
                 </a>
             </li>
             <li data-am-modal="{target: '#help'}">
-                <a href="#" class="">
+                <a  class="">
                     <span class="am-icon-bell"></span>
                     <span class="am-navbar-label">帮助</span>
                 </a>

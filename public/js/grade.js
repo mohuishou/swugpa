@@ -164,21 +164,19 @@ function getGrade(y,t) {
                 swal('提示','参数错误', 'warning');
                 $('#loading').hide();
             }else {
-                if(y>data.nj){
-                    if(t==2){
-                        t=t-1;
+                if(count==0){
+                    if(t==1){
+                        y=y-1;
                         getGrade(y,t);
                     }else {
-                        y=y-1;
-                        t=2;
+                        t-=1;
                         getGrade(y,t);
                     }
-                }else if(y==data.nj&&t==2){
-                    t=t-1;
-                    getGrade(y,t);
                 }else {
+                    swal('提示',"获取成绩失败<br />"+data.msg, 'warning');
                     $('#loading').hide();
                 }
+
             }
             // console.log(data);
         },

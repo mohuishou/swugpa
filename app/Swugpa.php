@@ -69,7 +69,7 @@ class Swugpa{
 
     public function grade($year,$term){
 
-        if($this->loginJwc()){
+        if($this->loginJwc($this->_college_cookie)){
             $this->getGrade($this->_jwc_cookie,$this->_uid,$year,$term);
         };
     }
@@ -109,7 +109,7 @@ class Swugpa{
     {
         $curl=new Curl();
         $curl->setOpt(CURLOPT_SSL_VERIFYPEER, false);
-        $curl->setCookieJar(__DIR__.'/../cookie/college.cookie');
+        $curl->setCookieJar(__DIR__.'/../cookie/college-'.$this->_uid.'.cookie');
         $curl->get($this->_url_login_college,array(
            'CTgtId'=> $key
         ));
@@ -129,7 +129,7 @@ class Swugpa{
         $curl=new Curl();
         $curl->setOpt(CURLOPT_FOLLOWLOCATION, true);
         $curl->setOpt(CURLOPT_ENCODING , 'gzip');
-        $curl->setCookieFile(__DIR__.'/../cookie/college.cookie');
+        $curl->setCookieFile(__DIR__.'/../cookie/college-'.$this->_uid.'.cookie');
         $curl->get($this->_url_login_jwc);
         if ($curl->error) {
             echo 'Error: ' . $curl->errorCode . ': ' . $curl->errorMessage;
