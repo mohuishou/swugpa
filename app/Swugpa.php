@@ -49,6 +49,8 @@ class Swugpa{
 
     /**
      * @author mohuishou<1@lailin.xyz>
+     * @param $username
+     * @param $password
      * @return bool
      */
     public function login($username,$password){

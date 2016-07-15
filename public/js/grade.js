@@ -1,5 +1,7 @@
 
 $(document).ready(function () {
+
+    //获取年份，月份，判断当前学期
     var myDate=new Date();
     var year=myDate.getFullYear();
     var mo=myDate.getMonth();
@@ -14,37 +16,79 @@ $(document).ready(function () {
     }else {
         term=1;
     }
+
+
+    //获取成绩
     getGrade(year,term);
 });
 
+/**
+ * 点击任意行，选择状态
+ */
 $('#grade').on('click', 'table tbody tr', function(e) {
     $(this).toggleClass('am-active choose');
 });
 
 /**
+ * 点击表头移除选择
+ */
+$('#grade').on('click', 'table thead', function(e) {
+    $("table tbody tr").removeClass('am-active choose');
+});
+
+/**
+ * 全选点击事件计数器
+ * @type {number}
+ */
+var a_count=0;
+
+/**
  * 选择所有课程
  **/
 function chooseAll() {
-    $('table tbody tr').removeClass('am-active choose');
-    $('table tbody tr').addClass('am-active choose');
-};
+    if(a_count==0){
+        $('table tbody tr').removeClass('am-active choose');
+        $('table tbody tr').addClass('am-active choose');
+        a_count=1;
+    }else if(a_count==1){
+        $('table tbody tr').removeClass('am-active choose');
+        a_count=0;
+    }
+
+}
+
+/**
+ * 必修全选计数器
+ * @type {number}
+ */
+var r_count=0;
 
 /**
  * 选择所有必修课程
  **/
 function chooseReq() {
-    $('table tbody tr').removeClass('am-active choose');
-    $('.type-1').addClass('am-active choose');
+    if(r_count==0){
+        $('table tbody tr').removeClass('am-active choose');
+        $('.type-1').addClass('am-active choose');
+        r_count=1;
+    }else if (r_count==1){
+        $('table tbody tr').removeClass('am-active choose');
+        r_count=0;
+    }
+
 }
 
 /**
  * 计算已选择的成绩/绩点
  **/
 function calculation() {
-    var sum_xf=0;
-    var sum_gpa=0;
-    var sum_grade=0;
-    var sum_count=0;
+    //初始化遍历
+    var sum_xf=0;//学分总计
+    var sum_gpa=0;//gpa*学分 总计
+    var sum_grade=0;//成绩*学分 总计
+    var sum_count=0;//选择课程数目总计
+
+    //计算已选择课程
     $('.choose').each(function () {
         var s_gpa=Number($(this).find('.gpa').attr('val'));
         var s_grade=Number($(this).find('.grade').attr('val'));
@@ -54,6 +98,8 @@ function calculation() {
         sum_xf+=s_xf;
         sum_count++;
     });
+
+    //计算平均分
     var avg_gpa=sum_gpa/sum_xf;
     var avg_grade=sum_grade/sum_xf;
 
@@ -61,17 +107,22 @@ function calculation() {
     avg_gpa=avg_gpa.toFixed(2);
     avg_grade=avg_grade.toFixed(2);
 
+    //初始化modal
     $('.cal-choose').text(sum_count);
     $('.cal-gpa').text(avg_gpa);
     $('.cal-grade').text(avg_grade);
 
+    //显示计算结果
     $("#cal").modal('open');
 
     console.log('平均绩点：'+avg_gpa);
     console.log('平均成绩：'+avg_grade);
 }
 
-
+/**
+ * 获取成绩计数
+ * @type {number}
+ */
 var count=0;
 
 /**
