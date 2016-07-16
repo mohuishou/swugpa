@@ -41,10 +41,42 @@ class Swugpa{
      */
     protected $_password;
 
+    /**
+     * 教务处cookie
+     * @var array
+     */
     protected $_jwc_cookie;
 
+    /**
+     * 校内门户统一登录cookie
+     * @var array
+     */
+    protected $_college_cookie;
+
+    /**
+     * 登录需要的key
+     * @var
+     */
     protected $_key;
+
+    /**
+     * 用户学号
+     * @var
+     */
     public $_uid;
+
+    /**
+     * curl类
+     * @var Curl
+     */
+    protected $_curl;
+
+
+
+    public function __construct()
+    {
+        $this->_curl=new Curl();
+    }
 
 
     /**
@@ -57,22 +89,26 @@ class Swugpa{
         $this->_username=$username;
         $this->_password=$password;
         if(!$this->getKey()){
-            $this->returnData('帐号密码错误',10058);
-            return false;
+            return $this->returnData('帐号密码错误',10058);
         }
 
-        $this->loginCollege($this->_key);
+        $college_cookie=$this->loginCollege($this->_key);
+        $data['uid']=$this->_uid;
+        $data['college_cookie']=$college_cookie;
 
-        $this->returnData('登录成功，查询中......');
-
-        return true;
+        return $this->returnData('登录成功，查询中......',200,$data);
 
     }
 
+    /**
+     * @author mohuishou<1@lailin.xyz>
+     * @param $year
+     * @param $term
+     * @return bool
+     */
     public function grade($year,$term){
-
         if($this->loginJwc()){
-            $this->getGrade($this->_jwc_cookie,$this->_uid,$year,$term);
+            return $this->getGrade($year,$term);
         };
     }
 
@@ -82,21 +118,20 @@ class Swugpa{
      */
     public function getKey()
     {
-        $curl=new Curl();
         $serviceInfo='{"serviceAddress":"https://uaaap.swu.edu.cn/cas/ws/acpInfoManagerWS","serviceType":"soap","serviceSource":"td","paramDataFormat":"xml","httpMethod":"POST","soapInterface":"getUserInfoByUserName","params":{"userName":"'.$this->_username.'","passwd":"'.$this->_password.'","clientId":"yzsfwmh","clientSecret":"1qazz@WSX3edc$RFV","url":"http://i.swu.edu.cn"},"cDataPath":[],"namespace":"","xml_json":""}';
-        $curl->get($this->_url_login_progress,array(
+        $this->_curl->get($this->_url_login_progress,array(
             "serviceInfo"=>$serviceInfo
         ));
-        if ($curl->error) {
-            echo 'Error: ' . $curl->errorCode . ': ' . $curl->errorMessage;
+        if ($this->_curl->error) {
+            echo 'Error: ' . $this->_curl->errorCode . ': ' . $this->_curl->errorMessage;
             return false;
         }
         else {
-            if(isset($curl->response->data->getUserInfoByUserNameResponse->return->info->attributes->tgt)){
-                $key=$curl->response->data->getUserInfoByUserNameResponse->return->info->attributes->tgt;
+            if(isset($this->_curl->response->data->getUserInfoByUserNameResponse->return->info->attributes->tgt)){
+                $key=$this->_curl->response->data->getUserInfoByUserNameResponse->return->info->attributes->tgt;
                 $key=base64_decode($key);
                 $this->_key=$key;
-                $this->_uid=$curl->response->data->getUserInfoByUserNameResponse->return->info->id;
+                $this->_uid=$this->_curl->response->data->getUserInfoByUserNameResponse->return->info->id;
                 return true;
             }
             return false;
@@ -106,49 +141,57 @@ class Swugpa{
     /**
      * @author mohuishou<1@lailin.xyz>
      * @param $key
+     * @return array
      */
     public function loginCollege($key)
     {
-        $curl=new Curl();
-        $curl->setOpt(CURLOPT_SSL_VERIFYPEER, false);
-        $curl->setCookieJar(__DIR__.'/../cookie/college-'.$this->_uid.'.cookie');
-        $curl->get($this->_url_login_college,array(
+        $this->_curl->setOpt(CURLOPT_SSL_VERIFYPEER, false);
+        $this->_curl->setCookieJar(__DIR__.'/../cookie/college-'.$this->_uid.'.cookie');
+        $this->_curl->get($this->_url_login_college,array(
            'CTgtId'=> $key
         ));
-        if ($curl->error) {
-            echo 'Error: ' . $curl->errorCode . ': ' . $curl->errorMessage;
+        if ($this->_curl->error) {
+            echo 'Error: ' . $this->_curl->errorCode . ': ' . $this->_curl->errorMessage;
         }
         else {
-            $curl->close();
+            $this->_college_cookie=$this->_curl->getResponseCookies();
+            return $this->_college_cookie;
         }
     }
 
     /**
      * @author mohuishou<1@lailin.xyz>
+     * @return array
      */
     public function loginJwc()
     {
-        $curl=new Curl();
-        $curl->setOpt(CURLOPT_FOLLOWLOCATION, true);
-        $curl->setOpt(CURLOPT_ENCODING , 'gzip');
-        $curl->setCookieFile(__DIR__.'/../cookie/college-'.$this->_uid.'.cookie');
-        $curl->get($this->_url_login_jwc);
-        if ($curl->error) {
-            echo 'Error: ' . $curl->errorCode . ': ' . $curl->errorMessage;
+        $this->_curl->setOpt(CURLOPT_FOLLOWLOCATION, true);
+        $this->_curl->setOpt(CURLOPT_ENCODING , 'gzip');
+        $this->_curl->setCookieFile(__DIR__.'/../cookie/college-'.$this->_uid.'.cookie');
+        $this->_curl->get($this->_url_login_jwc);
+        if ($this->_curl->error) {
+            echo 'Error: ' . $this->_curl->errorCode . ': ' . $this->_curl->errorMessage;
         }
         else {
-            $this->_jwc_cookie=$curl->getResponseCookies();
-            return true;
+            $this->_jwc_cookie=$this->_curl->getResponseCookies();
+            return $this->_jwc_cookie;
         }
     }
 
     /**
+     * 获取成绩
      * @author mohuishou<1@lailin.xyz>
-     * @param $jwc_cookie
-     * @param $uid
+     * @param int $year 学年
+     * @param int $term 学期代码
+     * @param null|int $uid 用户学号|不填使用$this->_uid
+     * @param null|array $jwc_cookie 教务处cookie|不填使用$this->_jwc_cookie
+     * @return array
      */
-    public function getGrade($jwc_cookie,$uid,$year,$term)
+    public function getGrade($year,$term,$uid=null,$jwc_cookie=null)
     {
+        $uid || $uid=$this->_uid;
+        $jwc_cookie || $jwc_cookie=$this->_jwc_cookie;
+
         $grade_param=[
             "doType"=>"query",
             "sessionUserKey"=>$uid,
@@ -158,25 +201,24 @@ class Swugpa{
             "queryModel.currentPage"=>1
         ];
 
-        $curl=new Curl();
-        $curl->setHeader('X-Requested-With', 'XMLHttpRequest');
+        $this->_curl->setHeader('X-Requested-With', 'XMLHttpRequest');
         foreach ($jwc_cookie as $k => $v){
-            $curl->setCookie($k,$v);
+            $this->_curl->setCookie($k,$v);
         }
-        $curl->post($this->_url_grade,$grade_param);
-        if ($curl->error) {
-            echo 'Error: ' . $curl->errorCode . ': ' . $curl->errorMessage;
+        $this->_curl->post($this->_url_grade,$grade_param);
+        if ($this->_curl->error) {
+            $error_msg= 'Error: ' . $this->_curl->errorCode . ': ' . $this->_curl->errorMessage;
+            return $this->returnData($error_msg,20004);
         }
         else {
-            if(empty($curl->response->items)){
-                echo json_encode([
+            if(empty($this->_curl->response->items)){
+                return [
                     'status'=>20005,
                     'msg'=>'该学期暂时没有成绩'
-                ]);
-                return false;
+                ];
             }
 
-            $re=$curl->response->items;
+            $re=$this->_curl->response->items;
 
             $data['name']=$re[0]->xm;
             $data['time']=$re[0]->xnmmc;
@@ -236,13 +278,12 @@ class Swugpa{
             $data['grade']=$grade_data;
             $data['status']=200;
 
-            echo json_encode($data);
+            return $data;
         }
     }
 
     public function returnData($msg,$status=200,$data=null){
-        echo json_encode( ['status'=>$status, 'msg'=>$msg, 'data'=>$data]);
-        return false;
+        return ['status'=>$status, 'msg'=>$msg, 'data'=>$data];
     }
 
     /**

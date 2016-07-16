@@ -6,8 +6,12 @@
             $username=$_POST['username'];
             $password=$_POST['password'];
             $a=new Mohuishou\Lib\Swugpa();
-            $a->login($username,$password);
-            $_SESSION['uid']=$a->_uid;
+            $re=$a->login($username,$password);
+            if($re['status']==200){
+                $_SESSION['uid']=$re['data']['uid'];
+                $_SESSION['college_cookie']=$re['data']['college_cookie'];
+            }
+            echo json_encode($re);
         }
     }
 

@@ -17,8 +17,11 @@ if(!isset($_SESSION['uid'])){
 
 if(isset($_POST['year'])&&$_POST['term']){
     $grade=new \Mohuishou\Lib\Swugpa();
-    $grade->_uid=$_SESSION['uid'];
-    $grade->grade($_POST['year'],$_POST['term']);
+    $uid=$_SESSION['uid'];
+    $grade->_uid=$uid;
+    $a=$grade->grade($_POST['year'],$_POST['term']);
+    echo json_encode($a);
+    exit();
 }else{
     echo json_encode([
         'status'=>20002,
