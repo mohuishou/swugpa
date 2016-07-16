@@ -1,11 +1,18 @@
 {
 	"name":"mohuishou/swugpa",
-
+    "description":"模拟登录西南大学教务处，获取西南大学教务处成绩",
+    "keywords":["西南大学","教务处","西南大学教务处","swu","swugpa"],
+    "version":"0.1.0",
+    "license":"MIT",
+    "author": {
+      "name": "mohuishou",
+      "email": "1@lailin.xyz"
+    },
     "require": {
         "php": ">5.4",
 		"php-curl-class/php-curl-class": "^4.11"
     },
     "autoload": {
-        "psr-4": {"Mohuishou\\Lib\\": "app/"}
+        "psr-4": {"Mohuishou\\Lib\\": "Lib/"}
     }
 }
